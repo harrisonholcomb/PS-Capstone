@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Interactive capstone demo of a shared-space sensor and recognition board for roommates." />
+  <title>Shared Space Recognition Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#demo" aria-label="Shared Space home">
+      <span class="brand-mark" aria-hidden="true">S</span>
+      <span><strong>Shared Space</strong><small>Household care, made visible</small></span>
+    </a>
+    <span class="prototype-chip">CAPSTONE PROTOTYPE</span>
+  </header>
+
+  <main>
+    <section class="demo-section" id="demo" aria-labelledby="demo-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">INTERACTIVE SCENARIO</p>
+          <h2 id="demo-title">Friday night at the kitchen sink</h2>
+        </div>
+        <button class="text-button" id="resetButton" type="button">↻ Reset demo</button>
+      </div>
+
+      <div class="stepper" aria-label="Scenario progress">
+        <div class="step is-active" data-step="0"><span>1</span><b>20% · Clean</b></div>
+        <div class="step" data-step="1"><span>2</span><b>50% · Watch</b></div>
+        <div class="step" data-step="2"><span>3</span><b>80% · Attention</b></div>
+        <div class="step" data-step="3"><span>4</span><b>Recognized</b></div>
+      </div>
+
+      <div class="demo-grid">
+        <article class="scene-card" aria-labelledby="scene-title">
+          <div class="card-header">
+            <div><p class="card-kicker">PHYSICAL SPACE</p><h3 id="scene-title">Kitchen sink</h3></div>
+            <span class="live-pill"><i></i> SENSOR ONLINE</span>
+          </div>
+
+          <div class="kitchen" id="kitchenScene" aria-live="polite">
+            <img class="kitchen-photo" id="kitchenPhoto" src="sink-messiness-20.png" alt="Real-life shared kitchen sink at 20 percent messiness with a green-lit sensor mounted above it">
+            <button class="sensor-hotspot" id="sensorInfoButton" type="button" aria-expanded="false" aria-controls="sensorDetail"><span class="sr-only">Show details for the overhead cleanliness sensor</span></button>
+            <div class="sensor-reading">
+              <span>Live surface estimate</span>
+              <strong id="surfaceStatus">20% messy · clean</strong>
+              <div class="meter"><i id="meterFill"></i></div>
+              <small id="readingCaption">Green · no action needed</small>
+            </div>
+          </div>
+
+          <div class="sensor-detail" id="sensorDetail" hidden>
+            <div><b>Concept sensor</b><span>Removable overhead module</span></div>
+            <ul><li>Detects persistent surface change</li><li>Opt-in household identity signal</li><li>No audio recording</li></ul>
+          </div>
+
+          <div class="scene-action">
+            <p id="sceneNarration">The sink is mostly clear, and the physical sensor shows green.</p>
+            <button class="button button-accent" id="primaryAction" type="button">Add a few dishes · 50%</button>
+          </div>
+        </article>
+
+        <article class="phone-card" aria-labelledby="board-title">
+          <div class="phone-shell">
+            <div class="phone-top"><span>9:41</span><i></i><i></i><i></i></div>
+            <div class="app-header">
+              <div><small>UNIT 402</small><h3 id="board-title">Home board</h3></div>
+              <div class="app-actions">
+                <div class="avatars" aria-label="Household members"><span>J</span><span>M</span><span>A</span></div>
+                <button class="request-add" id="openRequestDialog" type="button">+ Request</button>
+              </div>
+            </div>
+            <div class="status-summary">
+              <span class="status-dot" id="statusDot"></span>
+              <div><small>KITCHEN SINK</small><strong id="appStatus">All clear</strong></div>
+              <b id="statusScore">Clear</b>
+            </div>
+            <section class="requests-panel" id="requestsPanel" aria-labelledby="requests-title">
+              <div class="feed-label"><span id="requests-title">OPEN REQUESTS</span><span id="requestCount">0 REQUESTS</span></div>
+              <div class="request-list" id="requestList" aria-live="polite"></div>
+            </section>
+            <div class="feed-label activity-label"><span>TODAY</span><span>HOUSEHOLD ACTIVITY</span></div>
+            <div class="feed" id="activityFeed" aria-live="polite">
+              <div class="empty-state" id="emptyState" hidden>
+                <span>✓</span><b>Nothing needs attention</b><small>The board stays quiet when the house is in rhythm.</small>
+              </div>
+              <div class="recognition-feed" id="recognitionFeed">
+                <article class="feed-card recognition-card bathroom-card" id="bathroomCard" data-message-id="bathroom-clean">
+                  <div class="feed-icon">✓</div>
+                  <div><small>BATHROOM · HOUSEHOLD MOMENT</small><span class="activity-age" data-activity-age>2h ago</span><b>Alex cleaned the bathroom</b><p>A little care that makes the whole apartment nicer.</p>
+                    <div class="reaction-row" aria-label="React to Alex cleaning the bathroom"><button type="button" data-reaction="bath-heart" aria-pressed="false">♥ <span>1</span></button><button type="button" data-reaction="bath-spark" aria-pressed="false">✨ <span>2</span></button></div>
+                  </div>
+                </article>
+                <article class="feed-card recognition-card" id="recognitionCard" hidden data-message-id="sink-clean">
+                  <div class="feed-icon">♥</div>
+                  <div><small>HOUSEHOLD MOMENT</small><span class="activity-age" data-activity-age>Just now</span><b><span id="recognitionName">Jordan</span> reset the kitchen sink</b><p>Thanks for picking up the slack and making the space nicer for everyone.</p>
+                    <div class="reaction-row" aria-label="Choose one reaction"><button type="button" data-reaction="heart" aria-pressed="false">♥ <span>2</span></button><button type="button" data-reaction="spark" aria-pressed="false">✨ <span>1</span></button><button type="button" data-reaction="thanks" aria-pressed="false">Say thanks</button></div>
+                  </div>
+                </article>
+              </div>
+              <article class="feed-card alert-card" id="alertCard" hidden>
+                <div class="feed-icon">!</div>
+                <div><small>KITCHEN · SENSOR</small><b>The sink may need a reset</b><p>A surface change has remained for 25 minutes.</p><span class="neutral-copy">No person is assigned or blamed.</span></div>
+              </article>
+              <article class="feed-card clean-card" id="cleanCard" hidden>
+                <div class="feed-icon">✓</div>
+                <div><small>KITCHEN · SENSOR</small><b>The sink looks clear again</b><p>Household identity signal matched Jordan. Posting recognition automatically…</p><span class="identity-match">J · Jordan detected nearby</span></div>
+              </article>
+            </div>
+            <section class="spaces-view" id="spacesView" hidden aria-label="Unit 402 spaces and ownership">
+              <div class="spaces-monitor-row"><span class="spaces-live"><i></i> LIVE MONITORING</span><small>Updates with the demo</small></div>
+              <div class="spaces-summary"><span><i class="clean-dot"></i>Green · 0–39%</span><span><i class="watch-dot"></i>Yellow · 40–79%</span><span><i class="care-dot"></i>Red · 80%+</span></div>
+              <div class="unit-plan">
+                <article class="unit-room room-b1 state-clean"><span class="owner-badge">J</span><b>Bedroom 1</b><small>Jordan · 10% messy</small></article>
+                <article class="unit-room room-b2 state-watch"><span class="owner-badge">M</span><b>Bedroom 2</b><small>Maya · 45% messy</small></article>
+                <article class="unit-room room-b3 state-clean"><span class="owner-badge">A</span><b>Bedroom 3</b><small>Alex · 20% messy</small></article>
+                <article class="unit-room room-bath1 state-clean"><span class="owner-badge shared">JM</span><span class="live-pulse" aria-label="Live monitoring"></span><b>Bath</b><small>Shared · 20% messy</small></article>
+                <article class="unit-room room-bath2 state-clean"><span class="owner-badge shared">MA</span><span class="live-pulse" aria-label="Live monitoring"></span><b>Bath</b><small>Shared · 25% messy</small></article>
+                <article class="unit-room room-living state-watch"><span class="owner-badge shared">JMA</span><span class="live-pulse" aria-label="Live monitoring"></span><b>Living room</b><small>Shared · 50% messy</small><div class="appliance-chip state-watch"><span>Dining table</span><strong>50%</strong></div></article>
+                <article class="unit-room room-kitchen state-clean" id="kitchenSpace"><span class="owner-badge shared">JMA</span><span class="live-pulse" aria-label="Kitchen is monitored live"></span><b>Kitchen</b><small id="kitchenMessinessLabel">Shared · 20% messy</small><div class="appliances"><span class="sink-chip state-clean" id="sinkSpaceChip">Sink · 20% messy</span><span class="state-clean">Counter · M · 32%</span></div></article>
+              </div>
+              <p class="spaces-note"><b>Percentages show messiness.</b> Ownership shows who agreed to watch a space—not who is blamed when it gets messy.</p>
+            </section>
+            <section class="thanks-view" id="thanksView" hidden aria-label="Recent household thanks">
+              <div class="thanks-hero">♥</div><b>Care noticed this week</b><p>Recognition moves here after 24 hours and remains visible for one week.</p>
+              <div class="thanks-history" id="thanksHistory" aria-live="polite"></div>
+            </section>
+            <nav class="app-nav" aria-label="Demo app navigation">
+              <button class="nav-tab is-selected" type="button" data-view="board" aria-pressed="true">⌂<small>Board</small></button>
+              <button class="nav-tab" type="button" data-view="spaces" aria-pressed="false">□<small>Spaces</small></button>
+              <button class="nav-tab" type="button" data-view="thanks" aria-pressed="false">♡<small>Thanks</small></button>
+            </nav>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="flow-section" aria-labelledby="flow-title">
+      <div class="section-heading compact">
+        <div>
+          <p class="eyebrow">ONE USER FLOW</p>
+          <h2 id="flow-title">How recognition happens</h2>
+          <p class="flow-intro">The system detects both the physical reset and the participating household member, then posts recognition automatically.</p>
+        </div>
+      </div>
+      <figure class="flow-export">
+        <img src="user-flow-diagram.png" alt="Centered box-and-arrow user flow: sink state changes, the sensor detects a persistent change, a roommate cleans, the reset and Jordan's identity are detected automatically, and recognition is posted. If nobody cleans, the alert stays open.">
+        <figcaption>
+          <span>High-resolution image · 1800 × 720 px</span>
+          <a class="flow-download" href="user-flow-diagram.png" download="Shared-Space-Recognition-User-Flow.png">Download PNG <span aria-hidden="true">↓</span></a>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="concept-section" aria-labelledby="concept-title">
+      <div class="section-heading compact"><div><p class="eyebrow">PHYSICAL + DIGITAL SKETCH</p><h2 id="concept-title">What the system could look like</h2></div></div>
+      <div class="concept-grid">
+        <article class="concept-card physical-concept">
+          <div class="concept-copy"><span class="concept-number">A</span><h3>Counter sensor puck</h3><p>A removable module tracks one defined zone and pairs the cleanup event with an opt-in household identity signal.</p><ul><li>Surface-change sensing</li><li>Phone or wearable proximity</li><li>Visible pause button</li></ul></div>
+          <div class="puck-sketch" aria-label="Sketch of a small sensor mounted under a kitchen cabinet"><div class="cabinet-sketch">UNDER CABINET</div><div class="puck"><i></i><span></span></div><div class="beam"></div><div class="surface-sketch"><span></span><span></span><span></span></div></div>
+        </article>
+        <article class="concept-card digital-concept">
+          <div class="concept-copy"><span class="concept-number">B</span><h3>Shared bulletin board</h3><p>A tablet near the entrance—or the same view on each phone—shows only what needs attention and what deserves thanks.</p><ul><li>Neutral household language</li><li>Manual correction for false alerts</li><li>Recognition, not points</li></ul></div>
+          <div class="board-sketch" aria-label="Sketch of a wall-mounted digital bulletin board"><div class="mini-top">UNIT 402 <span>●</span></div><div class="mini-map"><i class="room room-one">Bath</i><i class="room room-two">Kitchen</i><i class="room room-three">Living</i></div><div class="mini-note"><b>♥ Thanks, Jordan</b><span>Kitchen sink reset</span></div></div>
+        </article>
+      </div>
+      <div class="feasibility-note"><b>Capstone feasibility boundary</b><p>Automatic identity is an unvalidated concept assumption. A prototype should test opt-in participation, attribution accuracy, correction controls, and whether recognition still feels positive when the system names someone automatically.</p></div>
+    </section>
+  </main>
+
+  <dialog class="request-dialog" id="requestDialog" aria-labelledby="request-dialog-title">
+    <form class="request-form" id="requestForm">
+      <div class="dialog-heading"><div><p class="card-kicker">HOUSEHOLD REQUEST</p><h2 id="request-dialog-title">What needs doing?</h2></div><button class="dialog-close" type="button" data-close-dialog="requestDialog" aria-label="Close request form">×</button></div>
+      <label class="field-label" for="requestText">Request</label>
+      <textarea id="requestText" name="requestText" maxlength="160" rows="3" required placeholder="e.g. Please take the laundry out of the washer"></textarea>
+      <div class="field-help"><span>Shared with the whole household</span><span id="requestCharCount">0 / 160</span></div>
+
+      <fieldset><legend>How urgent is it?</legend><div class="choice-grid urgency-grid">
+        <label><input type="radio" name="urgency" value="whenever"><span><b>Whenever</b><small>No rush</small></span></label>
+        <label><input type="radio" name="urgency" value="soon" checked><span><b>Soon</b><small>When someone can</small></span></label>
+        <label><input type="radio" name="urgency" value="urgent"><span><b>Urgent</b><small>Needs attention</small></span></label>
+      </div></fieldset>
+
+      <fieldset><legend>Post as</legend><div class="choice-grid identity-grid">
+        <label><input type="radio" name="sender" value="jordan" checked><span>J<b>Jordan</b></span></label>
+        <label><input type="radio" name="sender" value="maya"><span>M<b>Maya</b></span></label>
+        <label><input type="radio" name="sender" value="alex"><span>A<b>Alex</b></span></label>
+        <label><input type="radio" name="sender" value="anonymous"><span>•<b>Anonymous</b></span></label>
+      </div></fieldset>
+      <p class="form-error" id="requestError" role="alert" hidden></p>
+      <div class="dialog-actions"><button class="button dialog-cancel" type="button" data-close-dialog="requestDialog">Cancel</button><button class="button button-dark" type="submit">Post request</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="request-dialog completion-dialog" id="completionDialog" aria-labelledby="completion-dialog-title">
+    <form class="request-form" id="completionForm">
+      <div class="dialog-heading"><div><p class="card-kicker">REQUEST COMPLETE</p><h2 id="completion-dialog-title">Who handled it?</h2></div><button class="dialog-close" type="button" data-close-dialog="completionDialog" aria-label="Close completion form">×</button></div>
+      <p class="completion-task" id="completionTask"></p>
+      <fieldset><legend>Give credit to</legend><div class="choice-grid identity-grid">
+        <label><input type="radio" name="completer" value="jordan" checked><span>J<b>Jordan</b></span></label>
+        <label><input type="radio" name="completer" value="maya"><span>M<b>Maya</b></span></label>
+        <label><input type="radio" name="completer" value="alex"><span>A<b>Alex</b></span></label>
+        <label><input type="radio" name="completer" value="anonymous"><span>•<b>Anonymous</b></span></label>
+      </div></fieldset>
+      <div class="dialog-actions"><button class="button dialog-cancel" type="button" data-close-dialog="completionDialog">Cancel</button><button class="button button-dark" type="submit">Mark done + thank</button></div>
+    </form>
+  </dialog>
+
+  <footer><span>Shared Space Recognition Demo</span><span>Illustrative prototype · Not a validated product</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>
